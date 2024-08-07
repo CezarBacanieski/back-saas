@@ -1,8 +1,6 @@
 import express from 'express';
-// import cors from 'cors';
 import db from './config/dbConnect.js';
 import routes from './routes/index.js';
-import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -11,8 +9,8 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-// app.use(cors());
-app.use(function (req, res, next) {
+// Middleware para CORS
+app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); // Permitir acesso de qualquer origem
   res.setHeader(
     'Access-Control-Allow-Methods',
@@ -22,25 +20,33 @@ app.use(function (req, res, next) {
     'Access-Control-Allow-Headers',
     'X-Requested-With,content-type'
   ); // Headers permitidos
-  res.setHeader('Access-Control-Allow-Credentials', true); // Permitir credenciais (cookies, headers de autenticação)
+  res.setHeader('Access-Control-Allow-Credentials', true); // Permitir credenciais
 
-  // Permitir métodos OPTIONS sem serem bloqueados
-  if ('OPTIONS' == req.method) {
+  if (req.method === 'OPTIONS') {
     res.sendStatus(200);
   } else {
     next();
   }
 });
 
-app.use('/uploads', express.static(join(__dirname, '../../back-saas/uploads')));
+// Servir arquivos estáticos
+app.use('/uploads', express.static(join(__dirname, '../uploads'))); // Ajuste o caminho conforme necessário
 
 app.use(express.json());
 
-db.on('error', console.log.bind(console, 'Erro de conexão'));
+// Conexão com o banco de dados
+db.on('error', console.error.bind(console, 'Erro de conexão'));
 db.once('open', () => {
-  console.log('conexão com o banco feita com sucesso');
+  console.log('Conexão com o banco feita com sucesso');
 });
 
+// Configuração das rotas
 routes(app);
+
+// Middleware de tratamento de erros
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Algo deu errado!');
+});
 
 export default app;
