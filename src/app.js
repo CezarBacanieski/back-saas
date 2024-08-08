@@ -46,7 +46,7 @@ routes(app);
 // Middleware de tratamento de erros
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Algo deu errado!');
+  res.status(500).json({ message: 'Algo deu errado!', error: err.message });
 });
 
 export default app;
