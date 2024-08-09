@@ -4,19 +4,20 @@ import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 
 class ImagemController {
-	static salvarImagem = async (req, res) => {
-		try {
-			const imageFile = ImagemModel({
-				filename: req.file.filename,
-				filepath: req.file.path,
-			});
-			const savedImage = await imageFile.save();
+	// static salvarImagem = async (req, res) => {
+	// 	try {
+	// 		const imageFile = ImagemModel({
+	// 			filename: req.file.filename,
+	// 			filepath: req.file.path,
+	// 		});
+	// 		const savedImage = await imageFile.save();
 
-			res.status(200).send('imagem salva com sucesso' + savedImage);
-		} catch (error) {
-			res.status(500).send('erro ao salvar imagem' + error);
-		}
-	};
+	// 		res.status(200).send('imagem salva com sucesso' + savedImage);
+	// 	} catch (error) {
+	// 		res.status(500).send('erro ao salvar imagem' + error);
+	// 	}
+	// };
+
 	static buscarImagem = async (req, res) => {
 		try {
 			const { filename } = req.params;
@@ -43,32 +44,6 @@ class ImagemController {
 		}
 	};
 
-	static atualizarImagem = async (req, res) => {
-		try {
-			const { filename } = req.params;
-
-			// Encontra a imagem existente pelo nome do arquivo
-			const imagemExistente = await ImagemModel.findOne({
-				filename: filename,
-			});
-
-			if (!imagemExistente) {
-				return res.status(404).send('Imagem não encontrada');
-			}
-
-			// Atualiza o caminho do arquivo da imagem existente
-			imagemExistente.filepath = req.file.path;
-
-			const imagemAtualizada = await imagemExistente.save();
-
-			res.status(200).json({
-				message: 'imagem atualizada com sucesso!',
-				imagem: imagemAtualizada,
-			});
-		} catch (error) {
-			res.status(500).send('Erro ao atualizar imagem' + error);
-		}
-	};
 
 	static deletarImagem = async (req, res) => {
 		try {
