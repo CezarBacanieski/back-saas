@@ -130,7 +130,7 @@ router.put(
 );
 
 // Rota para deletar imagem por nome
-router.delete('/deletar/:name', async (req, res) => {
+router.delete('/deletarImagem/:name', async (req, res) => {
   try {
     const { name } = req.params;
 
