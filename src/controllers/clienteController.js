@@ -3,7 +3,7 @@ import clienteModel from '../models/clienteModel.js';
 class ClienteController {
   static buscarTodosClientes = async (req, res) => {
     try {
-      const todosClientes = await clienteModel.find().select('nome -_id')
+      const todosClientes = await clienteModel.find().select('nome -_id');
 
       res.status(200).json({ message: 'Todos os clientes: ', todosClientes });
     } catch (error) {
@@ -44,9 +44,16 @@ class ClienteController {
 
       res.status(201).json({ message: 'Dados do cliente salvos com sucesso!' });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: 'Erro ao salvar dados do cliente' + error });
+      if (error.code === 11000) {
+        // Código 11000 indica erro de chave duplicada
+        res
+          .status(400)
+          .json({ message: 'Já existe um cliente com este nome.' });
+      } else {
+        res
+          .status(500)
+          .json({ message: 'Erro ao salvar dados do cliente' + error });
+      }
     }
   };
 
