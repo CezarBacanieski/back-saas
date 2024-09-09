@@ -14,7 +14,7 @@ class TabelaController {
 
   static buscarTabelaPorNome = async (req, res) => {
     try {
-      const { nome } = req.params.nome;
+      const { nome } = req.params;
       const tabelaResultadoBuscaPorNome = await tabelaResultadosModel.find({
         nome: nome,
       });
